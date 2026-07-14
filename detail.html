@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resep Masakan DapurKita</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { corePlugins: { preflight: false } }</script>
+
+  <style>
+    :root {
+      --primary: #C97429; 
+      --primary-dark: #A85E1C;
+      --bg: #FDF6EC; 
+      --card-bg: #FFFAF2;
+      --text: #1C1208; 
+      --muted: #7A6040;
+      --border: rgba(139,90,30,0.15); 
+      --secondary-bg: #F2E8D5;
+    }
+
+    [data-theme="dark"] {
+      --primary: #E8922A; 
+      --primary-dark: #C97429;
+      --bg: #160D03; 
+      --card-bg: #1E1107;
+      --text: #F5D9A8; 
+      --muted: #A08050;
+      --border: rgba(200,140,60,0.15); 
+      --secondary-bg: #2A1A08;
+    }
+
+    .loading-screen{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+   }
+
+    * { box-sizing: border-box; }
+
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      transition: background-color 0.3s, color 0.3s; 
+    }
+
+    h1,h2,h3,h4,h5 { 
+      font-family: 'Playfair Display', serif; 
+    }
+
+    .navbar-dapur { 
+      background: var(--card-bg); 
+      border-bottom: 1px solid var(--border); 
+      position: sticky; 
+      top: 0; 
+      z-index: 1000; 
+      box-shadow: 0 4px 20px rgba(201, 116, 41, 0.35);
+    }
+
+    .navbar-brand-text { 
+      font-family: 'Playfair Display', serif; 
+    }
+
+    .nav-link-custom { 
+      color: var(--muted)!important; 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      transition: color 0.2s; 
+      padding: 0.5rem 0; 
+      text-decoration: none !important;
+    }
+
+    .nav-link-custom:hover { 
+      color: var(--primary)!important; 
+    }
+
+    /* jangan tampilkan garis aktif */
+    .nav-link-custom.active::after {
+       width: 0 !important;
+    }
+
+    .btn-theme { 
+    background: var(--secondary-bg); 
+    border: 1px solid var(--border); 
+    color: var(--muted); 
+    border-radius: 9999px; 
+    width: 36px; 
+    height: 36px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: all 0.2s; 
+  }
+
+    .btn-theme:hover { 
+      color: var(--text); 
+    }
+
+    .back-link { 
+      color: var(--muted); 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      text-decoration: none; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      transition: color 0.2s; 
+    }
+
+    .back-link:hover { 
+      color: var(--primary); 
+    }
+
+    .stat-card { 
+      background: var(--card-bg); 
+      border: 1px solid var(--border); 
+      border-radius: 14px; 
+      padding: 16px; 
+      text-align: center; 
+    }
+
+    .stat-card .val { 
+      font-family: 'Playfair Display', serif; font-size: 1.6rem; 
+      font-weight: 800; 
+      color: var(--text); 
+    }
+
+    .stat-card .label { 
+      font-size: 0.7rem; 
+      font-weight: 600; 
+      color: var(--muted); 
+      margin-top: 2px; 
+    }
+
+    .tag-primary { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 4px; 
+      background: rgba(201,116,41,0.12); 
+      color: var(--primary); 
+      font-size: 0.7rem; 
+      font-weight: 700; 
+      padding: 5px 12px; 
+      border-radius: 9999px; 
+    }
+
+    .tag-muted { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 4px; 
+      background: var(--secondary-bg); 
+      color: var(--muted); 
+      font-size: 0.7rem; 
+      font-weight: 700; 
+      padding: 5px 12px; 
+      border-radius: 9999px; 
+    }
+
+    .tag-plain { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 4px; 
+      background: var(--secondary-bg); 
+      color: var(--muted); 
+      font-size: 0.7rem; 
+      font-weight: 600; 
+      padding: 5px 10px; 
+      border-radius: 9999px; 
+    }
+
+    .btn-yt { 
+      background: #B5441A; 
+      color: #fff; 
+      border: none; 
+      border-radius: 12px; 
+      padding: 11px 22px; 
+      font-size: 0.875rem; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: background 0.2s; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      text-decoration: none; 
+    }
+
+    .btn-yt:hover { 
+      background: #903412; 
+      color: #fff; 
+    }
+
+    /* Tabs */
+    .tab-bar { 
+      border-bottom: 1px solid var(--border); 
+      display: flex; 
+      gap: 4px; 
+    }
+
+    .tab-btn { 
+      padding: 12px 18px; 
+      font-size: 0.875rem; 
+      font-weight: 600; 
+      border: none; 
+      background: transparent; 
+      color: var(--muted); 
+      cursor: pointer; 
+      border-bottom: 2px solid transparent; 
+      margin-bottom: -1px; 
+      transition: all 0.2s; 
+    }
+
+    .tab-btn:hover { 
+      color: var(--text); 
+    }
+
+    .tab-btn.active { 
+      color: var(--primary); 
+      border-bottom-color: var(--primary); 
+    }
+
+    .tab-panel { 
+      display: none; 
+    }
+
+    .tab-panel.active { 
+      display: block; 
+    }
+
+    /* Ingredient items */
+    .ing-item { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 14px; 
+      background: var(--card-bg); 
+      border: 1px solid var(--border); 
+      border-radius: 14px; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+      text-align: left; 
+      width: 100%; 
+    }
+
+    .ing-item:hover { 
+      border-color: rgba(201,116,41,0.25); 
+    }
+
+    .ing-item.checked { 
+      background: rgba(201,116,41,0.06); 
+      border-color: rgba(201,116,41,0.3); 
+    }
+
+    .ing-item .ing-name { 
+      flex: 1; font-size: 0.875rem; 
+      font-weight: 600; 
+      color: var(--text); 
+      transition: all 0.2s; 
+    }
+
+    .ing-item.checked .ing-name { 
+      text-decoration: line-through; 
+      color: var(--muted); 
+    }
+
+    .ing-item .ing-measure { 
+      font-size: 0.72rem; 
+      font-weight: 700; 
+      color: var(--primary);
+      background: rgba(201,116,41,0.12); 
+      padding: 3px 10px; 
+      border-radius: 8px; 
+      white-space: nowrap; 
+    }
+
+    .check-icon {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border); 
+      border-radius: 50%; 
+      flex-shrink: 0; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: all 0.2s; 
+    }
+
+    .ing-item.checked .check-icon { 
+      background: var(--primary); 
+      border-color: var(--primary); 
+    }
+
+    /* Instruction steps */
+    .step-card { 
+      display: flex; 
+      gap: 14px; 
+      padding: 16px; 
+      background: var(--card-bg); 
+      border: 1px solid var(--border); 
+      border-radius: 14px; 
+    }
+    .step-num { 
+      width: 32px; 
+      height: 32px; 
+      background: var(--primary); 
+      color: #fff; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 0.8rem; 
+      font-weight: 800; 
+      flex-shrink: 0; 
+      margin-top: 2px; 
+    }
+
+    .step-text { 
+      font-size: 0.875rem; 
+      color: var(--text); 
+      line-height: 1.7; 
+    }
+
+    /* Progress */
+    .progress-bar-outer { 
+      height: 6px; 
+      background: rgba(255,255,255,0.2); 
+      border-radius: 99px; 
+      overflow: hidden; 
+    }
+
+    .progress-bar-inner { 
+      height: 100%; 
+      background: var(--primary); 
+      border-radius: 99px; 
+      transition: width 0.5s; 
+    }
+
+    /* Hero image */
+    .recipe-hero-img { 
+      width: 100%; 
+      border-radius: 20px; 
+      object-fit: cover; 
+      aspect-ratio: 1; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15); 
+    }
+
+    .recipe-hero-wrap { 
+      position: relative; 
+    }
+
+    .progress-overlay { 
+      position: absolute; 
+      bottom: 0; 
+      
+      left: 0; 
+      right: 0; background: rgba(28,18,8,0.65); 
+      backdrop-filter: blur(8px); 
+      border-radius: 0 0 20px 20px; 
+      padding: 14px 16px; 
+    }
+
+    .skeleton { 
+      background: linear-gradient(90deg, var(--secondary-bg) 25%, var(--border) 50%, var(--secondary-bg) 75%); 
+      background-size: 200% 100%; 
+      animation: shimmer 1.5s infinite; 
+      border-radius: 10px; 
+    }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .footer-dapur { 
+      background: var(--card-bg); 
+      border-top: 1px solid var(--border); 
+    }
+
+    .section-alt { 
+      background: var(--card-bg); 
+      border-top: 1px solid var(--border); 
+      border-bottom: 1px solid var(--border); 
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar-dapur py-0">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between py-3">
+      <a href="index.html" class="text-decoration-none d-flex align-items-center gap-2">
+        <span style="font-size:1.5rem;">🍳</span>
+        <span class="navbar-brand-text fw-bold fs-5" style="color:var(--text);">Dapur<span style="color:var(--primary);">Kita</span></span>
+      </a>
+      <div class="d-none d-md-flex align-items-center gap-4">
+        <a href="index.html" class="nav-link-custom">Beranda</a>
+        <a href="search.html" class="nav-link-custom">Cari Resep</a>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn-theme" id="themeToggle"><i class="bi bi-moon-fill" id="themeIcon"></i></button>
+        <button class="btn-theme d-md-none" data-bs-toggle="collapse" data-bs-target="#mobileMenu"><i class="bi bi-list" style="font-size:1.1rem;"></i></button>
+      </div>
+    </div>
+    <div class="collapse d-md-none pb-3" id="mobileMenu">
+      <div class="d-flex flex-column gap-1">
+        <a href="index.html" class="nav-link-custom px-2">Beranda</a>
+        <a href="search.html" class="nav-link-custom px-2">Cari Resep</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div id="loadingState" class="loading-screen">
+  <div class="position-relative mb-3" style="width:48px;height:48px;">
+    <div class="position-absolute inset-0 rounded-circle border border-4" style="border-color:var(--secondary-bg)!important;"></div>
+    <div class="position-absolute rounded-circle border border-4 border-top-0" style="inset:0;border-color:var(--primary)!important;animation:spin 0.8s linear infinite;"></div>
+  </div>
+  <p style="color:var(--muted);font-size:0.875rem;font-weight:500;">Memuat resep...</p>
+</div>
+
+<div id="mainContent" style="display:none;">
+
+  <!-- BACK + HEADER -->
+  <div class="container py-4">
+    <a href="javascript:history.back()" class="back-link mb-4 d-inline-flex">
+      <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+
+    <div class="row g-4 g-lg-5 align-items-start">
+      <!-- Image -->
+      <div class="col-md-5">
+        <div class="recipe-hero-wrap">
+          <img id="mealImg" src="" alt="" class="recipe-hero-img" />
+          <div class="progress-overlay" id="progressOverlay" style="display:none;">
+            <div class="d-flex justify-content-between mb-1">
+              <span style="font-size:0.72rem;color:rgba(255,255,255,0.7);font-weight:600;">Progress memasak</span>
+              <span style="font-size:0.72rem;color:rgba(255,255,255,0.7);font-weight:600;" id="progressLabel">0/0 bahan</span>
+            </div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar" style="width:0%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="col-md-7">
+        <div class="d-flex flex-wrap gap-2 mb-3" id="mealTags"></div>
+        <h1 class="fw-bold mb-4 lh-sm" id="mealTitle" style="font-size:clamp(1.8rem,4vw,3rem);"></h1>
+
+        <div class="row g-2 mb-4" id="statsRow">
+          <div class="col-4"><div class="stat-card"><div class="val" id="statIngredients">—</div><div class="label">Bahan</div></div></div>
+          <div class="col-4"><div class="stat-card"><div class="val" id="statSteps">—</div><div class="label">Langkah</div></div></div>
+          <div class="col-4"><div class="stat-card"><div class="val" id="statVideo">—</div><div class="label">Video</div></div></div>
+        </div>
+
+        <div id="ytBtn"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="container pb-5">
+    <div class="tab-bar mb-4" id="tabBar"></div>
+
+    <!-- Ingredients Tab -->
+    <div class="tab-panel active" id="tab-ingredients">
+      <p id="checkedCount" style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;display:none;"></p>
+      <div class="row g-2" id="ingredientsList"></div>
+    </div>
+
+    <!-- Instructions Tab -->
+    <div class="tab-panel" id="tab-instructions">
+      <div class="col-lg-8" id="instructionsList"></div>
+    </div>
+
+    <!-- Video Tab -->
+    <div class="tab-panel" id="tab-video">
+      <div style="max-width:800px;">
+        <div style="aspect-ratio:16/9;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+          <iframe id="ytFrame" width="100%" height="100%" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="errorState" style="display:none;" class="text-center py-5 mt-5">
+  <div style="font-size:4rem;">🍽️</div>
+  <h3 class="mt-3 fw-bold">Resep Tidak Ditemukan</h3>
+  <p style="color:var(--muted);">Resep yang kamu cari tidak ada atau terjadi kesalahan.</p>
+  <a href="index.html" class="btn-primary-dapur mt-3 d-inline-block text-decoration-none" style="border-radius:999px;padding:10px 24px;">Kembali ke Beranda</a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer-dapur py-5">
+  <div class="container">
+    <div class="border-top pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2" style="border-color:var(--border)!important;">
+      <div class="d-flex align-items-center gap-2">
+        <span style="font-size:1.2rem;">🍳</span>
+        <span class="fw-bold" style="font-family:'Playfair Display',serif;color:var(--text);">Dapur<span style="color:var(--primary);">Kita</span></span>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted);margin:0;">© 2025 DapurKita. Data oleh <a href="https://www.themealdb.com/" target="_blank" style="color:var(--primary);">TheMealDB API</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+const API = 'https://www.themealdb.com/api/json/v1/1';
+
+// Theme
+const savedTheme = localStorage.getItem('dk-theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+$('#themeIcon').attr('class', savedTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill');
+$('#themeToggle').on('click', () => {
+  const curr = document.documentElement.getAttribute('data-theme');
+  const next = curr === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('dk-theme', next);
+  $('#themeIcon').attr('class', next === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill');
+});
+
+// Add spinner keyframe
+const style = document.createElement('style');
+style.textContent = `@keyframes spin { to { transform: rotate(360deg); } } .btn-primary-dapur { background: var(--primary); color: #fff; border: none; border-radius: 12px; padding: 11px 22px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }`;
+document.head.appendChild(style);
+
+// State
+let checkedIngredients = new Set();
+let totalIngredients = 0;
+
+// Get ID from URL
+const urlParams = new URLSearchParams(window.location.search);
+const mealId = urlParams.get('id');
+
+if (!mealId) {
+  $('#loadingState').hide();
+  $('#errorState').show();
+} else {
+  loadMeal(mealId);
+}
+
+async function loadMeal(id) {
+  try {
+    const res = await fetch(`${API}/lookup.php?i=${id}`);
+    const data = await res.json();
+
+    if (!data.meals || !data.meals.length) throw new Error('Not found');
+   const m = data.meals[0];
+$('#loadingState').hide();
+$('#mainContent').show();
+
+
+    // Extract ingredients
+    const ingredients = [];
+    for (let i = 1; i <= 20; i++) {
+      const ing = m[`strIngredient${i}`];
+      const meas = m[`strMeasure${i}`];
+      if (ing && ing.trim()) ingredients.push({ ingredient: ing, measure: meas || '' });
+    }
+    totalIngredients = ingredients.length;
+
+    // Parse instructions
+    const steps = m.strInstructions.split(/\r?\n/).map(s => s.trim()).filter(s => s.length);
+
+    // Populate header
+    document.title = `${m.strMeal} — DapurKita`;
+    $('#mealImg').attr({ src: m.strMealThumb, alt: m.strMeal });
+
+    // Tags
+    let tagsHtml = `
+      <span class="tag-primary"><i class="bi bi-tag-fill" style="font-size:0.6rem;"></i>${m.strCategory}</span>
+      <span class="tag-muted"><i class="bi bi-geo-alt-fill" style="font-size:0.6rem;"></i>${m.strArea}</span>
+    `;
+    if (m.strTags) {
+      m.strTags.split(',').forEach(t => {
+        tagsHtml += `<span class="tag-plain">${t.trim()}</span>`;
+      });
+    }
+    $('#mealTags').html(tagsHtml);
+    $('#mealTitle').text(m.strMeal);
+
+    // Stats
+    $('#statIngredients').text(totalIngredients);
+    $('#statSteps').text(steps.length);
+    $('#statVideo').html(m.strYoutube ? '▶' : '—');
+
+    // YouTube button
+    if (m.strYoutube) {
+      $('#ytBtn').html(`
+        <a href="${m.strYoutube}" target="_blank" class="btn-yt">
+          <i class="bi bi-play-fill"></i> Tonton di YouTube
+        </a>
+      `);
+    }
+
+    // Build Tabs
+    const tabs = ['ingredients', 'instructions'];
+    const tabLabels = { ingredients: 'Bahan-Bahan', instructions: 'Cara Memasak', video: 'Video Tutorial' };
+    if (m.strYoutube) tabs.push('video');
+
+    let tabBarHtml = '';
+    tabs.forEach((t, i) => {
+      tabBarHtml += `<button class="tab-btn ${i === 0 ? 'active' : ''}" data-tab="${t}">${tabLabels[t]}</button>`;
+    });
+    $('#tabBar').html(tabBarHtml);
+
+    // Tab click
+    $(document).on('click', '.tab-btn', function() {
+      const tab = $(this).data('tab');
+      $('.tab-btn').removeClass('active');
+      $(this).addClass('active');
+      $('.tab-panel').removeClass('active');
+      $(`#tab-${tab}`).addClass('active');
+    });
+
+    // Ingredients
+    let ingHtml = '';
+    ingredients.forEach((item, idx) => {
+      ingHtml += `
+        <div class="col-12 col-sm-6">
+          <button class="ing-item" data-idx="${idx}">
+            <div class="check-icon" id="checkIcon-${idx}"></div>
+            <span class="ing-name">${item.ingredient}</span>
+            <span class="ing-measure">${item.measure}</span>
+          </button>
+        </div>
+      `;
+    });
+    $('#ingredientsList').html(ingHtml);
+
+    $(document).on('click', '.ing-item', function() {
+      const idx = parseInt($(this).data('idx'));
+      if (checkedIngredients.has(idx)) {
+        checkedIngredients.delete(idx);
+        $(this).removeClass('checked');
+        $(`#checkIcon-${idx}`).html('');
+      } else {
+        checkedIngredients.add(idx);
+        $(this).addClass('checked');
+        $(`#checkIcon-${idx}`).html('<i class="bi bi-check-lg text-white" style="font-size:0.75rem;"></i>');
+      }
+      updateProgress();
+    });
+
+    // Instructions
+    let stepsHtml = '';
+    steps.forEach((step, idx) => {
+      const numMatch = step.match(/^(\d+)[\.\)]\s*(.+)/);
+      if (numMatch) {
+        stepsHtml += `<div class="step-card mb-3"><div class="step-num">${numMatch[1]}</div><div class="step-text">${numMatch[2]}</div></div>`;
+      } else {
+        stepsHtml += `<div class="step-card mb-3"><div class="step-num">${idx + 1}</div><div class="step-text">${step}</div></div>`;
+      }
+    });
+    $('#instructionsList').html(stepsHtml);
+
+    // Video
+    if (m.strYoutube) {
+      const vidId = m.strYoutube.split('v=')[1]?.split('&')[0];
+      $('#ytFrame').attr('src', `https://www.youtube.com/embed/${vidId}`);
+    }
+
+  } catch (err) {
+    console.error(err);
+    $('#loadingState').hide();
+    $('#errorState').show();
+  }
+}
+
+function updateProgress() {
+  const count = checkedIngredients.size;
+  const pct = totalIngredients > 0 ? (count / totalIngredients) * 100 : 0;
+
+  if (count > 0) {
+    $('#progressOverlay').show();
+    $('#progressBar').css('width', `${pct}%`);
+    $('#progressLabel').text(`${count}/${totalIngredients} bahan`);
+    $('#checkedCount').text(`✅ ${count} dari ${totalIngredients} bahan sudah disiapkan`).show();
+  } else {
+    $('#progressOverlay').hide();
+    $('#checkedCount').hide();
+  }
+}
+</script>
+</body>
+</html>
